@@ -4,16 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-    	// $this->validate($request, [
-    	// 	'email' => 'required|unique:users',
-    	// 	'password' => 'required',
-    	// ]);
     	$validator = Validator::make($request->all(), [
     		'email' => 'required|unique:users',
     		'password' => 'required',
@@ -31,5 +28,18 @@ class AuthController extends Controller
     	return response([
     		'message' => 'User successfully registered'
 		]);
+    }
+
+    public function login(Request $request)
+    {
+    	if (!Auth::attempt($request->only('email', 'password'))) {
+            return response([
+                'message' => 'Invalid credentials!' 
+            ], 401);
+        }
+
+        $token = Auth::user()->createToken('token')->plainTextToken;
+
+        return response(['token' => $token]);
     }
 }
