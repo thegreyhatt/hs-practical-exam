@@ -27,7 +27,7 @@ class AuthController extends Controller
 
     	return response([
     		'message' => 'User successfully registered'
-		]);
+		], 201);
     }
 
     public function login(Request $request)
